@@ -220,6 +220,40 @@ abstract class Param {
 	}
 	
 	/**
+	 * @param int $status
+	 * @param bool $fromWebId
+	 * @return N2nLocale
+	 */
+	public function toN2nLocaleOrReject($status = Response::STATUS_404_NOT_FOUND, bool $fromWebId = true) {
+		try {
+			if ($fromWebId) {
+				return N2nLocale::fromWebId((string) $this->value);
+			}
+
+			return N2nLocale::create((string) $this->value);
+		} catch (IllegalN2nLocaleFormatException $e) {
+			throw new StatusException($status);
+		}
+	}
+
+	/**
+	 * @param bool $fromWebId
+	 * @return N2nLocale|null
+	 */
+	public function toN2nLocaleOrNull(bool $fromWebId = true) {
+		$nl = null;
+		try {
+			if ($fromWebId) {
+				return N2nLocale::fromWebId((string) $this->value);
+			}
+
+			return N2nLocale::create((string) $this->value);
+		} catch (IllegalN2nLocaleFormatException $e) {
+			return null;
+		}
+	}
+	
+	/**
 	 * 
 	 * @return string
 	 */
